@@ -34,16 +34,19 @@ if (!fs.existsSync(receiptsDir)) {
 // ===================================
 function calculatePrice(roomType, checkIn, checkOut) {
     const prices = {
-        'VIP': 5000,
-        'Standard': 2500,
-        'Deluxe': 3500
+        'Single Standard': 1500,
+        'Double Standard': 2500,
+        'Twin': 3000,
+        'Delux': 4500,
+        'Suit': 6000,
+        'VIP': 8000
     };
-    
+
     const price = prices[roomType] || 2500;
     const date1 = new Date(checkIn);
     const date2 = new Date(checkOut);
     const nights = Math.ceil((date2 - date1) / (1000 * 60 * 60 * 24));
-    
+
     return {
         pricePerNight: price,
         numberOfNights: nights > 0 ? nights : 1,
@@ -59,7 +62,7 @@ function generateReceipt(booking) {
         const doc = new PDFDocument({ margin: 50 });
         const fileName = `receipt_${booking.id}.pdf`;
         const filePath = path.join(receiptsDir, fileName);
-        
+
         const stream = fs.createWriteStream(filePath);
         doc.pipe(stream);
 
@@ -67,11 +70,11 @@ function generateReceipt(booking) {
         doc.fontSize(25).fillColor('#007B9E').text('EAST STAR HOTEL', { align: 'center' });
         doc.fontSize(12).fillColor('#666').text('Dire Dawa, Ethiopia', { align: 'center' });
         doc.moveDown();
-        
+
         // Receipt title
         doc.fontSize(18).fillColor('#333').text('BOOKING RECEIPT', { align: 'center' });
         doc.moveDown();
-        
+
         // Booking ID and Date
         doc.fontSize(10).fillColor('#666').text(`Receipt Date: ${new Date().toLocaleDateString()}`, { align: 'right' });
         doc.fontSize(12).fillColor('#007B9E').text(`Booking ID: ${booking.id}`, { align: 'left' });
@@ -130,7 +133,7 @@ function generateReceipt(booking) {
 app.post('/api/book', async (req, res) => {
     try {
         const bookingData = req.body;
-        
+
         // Calculate pricing
         const pricing = calculatePrice(
             bookingData.roomType,

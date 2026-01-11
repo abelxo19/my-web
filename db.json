@@ -29,6 +29,21 @@
       "totalPrice": 25000,
       "bookingDate": "2026-01-11T07:58:50.394Z",
       "status": "Confirmed"
+    },
+    {
+      "id": 1768120206386,
+      "name": "kaleab",
+      "email": "kaleab@gmail.com",
+      "checkIn": "2026-01-12",
+      "checkOut": "2026-01-16",
+      "adults": "1 Adults",
+      "children": "0 Child",
+      "roomType": "Single Standard",
+      "pricePerNight": 2500,
+      "numberOfNights": 4,
+      "totalPrice": 10000,
+      "bookingDate": "2026-01-11T08:30:06.386Z",
+      "status": "Confirmed"
     }
   ],
   "info": {
@@ -38,8 +53,11 @@
     "email": "info@eaststarhotel.com"
   },
   "roomPrices": {
-    "VIP": 5000,
-    "Standard": 2500,
-    "Deluxe": 3500
+    "Single Standard": 1500,
+    "Double Standard": 2500,
+    "Twin": 3000,
+    "Delux": 4500,
+    "Suit": 6000,
+    "VIP": 8000
   }
 }

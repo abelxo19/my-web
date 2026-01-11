@@ -1,6 +1,6 @@
 // 1. Hero Slider
 const images = [
-    "1000005407.jpg",
+    "https://images.unsplash.com/photo-1611892440504-42a792e24d32",
     "https://images.unsplash.com/photo-1566073771259-6a8506099945",
     "https://images.unsplash.com/photo-1501117716987-c8e1ecb210c7"
 ];
@@ -38,6 +38,33 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById('nav-links').style.display === 'flex' ? 'none' : 'flex';
         document.getElementById('nav-links').style.flexDirection = 'column';
     };
+
+    // Date Validation
+    const checkInInput = document.querySelector('input[type="date"]');
+    const checkOutInput = document.querySelectorAll('input[type="date"]')[1];
+
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    checkInInput.min = today;
+    checkOutInput.min = today;
+
+    checkInInput.addEventListener('change', () => {
+        // When check-in changes, update check-out min date
+        checkOutInput.min = checkInInput.value;
+
+        // If check-out is before check-in, clear it
+        if (checkOutInput.value && checkOutInput.value <= checkInInput.value) {
+            alert("Check-out date must be after check-in date.");
+            checkOutInput.value = "";
+        }
+    });
+
+    checkOutInput.addEventListener('change', () => {
+        if (checkInInput.value && checkOutInput.value <= checkInInput.value) {
+            alert("Check-out date must be after check-in date.");
+            checkOutInput.value = "";
+        }
+    });
 
     // Form Submit - Connected to Backend
     document.getElementById('bookingForm').onsubmit = async (e) => {
