@@ -79,6 +79,7 @@ body {
 }
 
 /* Hero Slider */
+/* Hero Slider */
 .hero {
     height: 85vh;
     position: relative;
@@ -87,7 +88,8 @@ body {
     justify-content: center;
     text-align: center;
     color: #fff;
-    /* Set default image immediately to prevent gray flash */
+    background-color: #333;
+    /* Fallback color */
     background-image: url('https://images.unsplash.com/photo-1611892440504-42a792e24d32');
     background-size: cover;
     background-position: center;
