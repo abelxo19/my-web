@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - View Bookings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h1 {
+            color: #007B9E;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-card i {
+            font-size: 40px;
+            color: #007B9E;
+            margin-bottom: 10px;
+        }
+        .stat-card h3 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .stat-card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .bookings-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .section-header h2 {
+            color: #007B9E;
+            font-size: 1.8rem;
+        }
+        .refresh-btn {
+            background: #007B9E;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .refresh-btn:hover {
+            background: #005f7f;
+            transform: translateY(-2px);
+        }
+        .search-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+        .search-box:focus {
+            outline: none;
+            border-color: #007B9E;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th {
+            background: #007B9E;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+        .no-bookings {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        .no-bookings i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+        .download-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.3s;
+        }
+        .download-btn:hover {
+            background: #218838;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #007B9E;
+        }
+        .back-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #007B9E;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: 0.3s;
+        }
+        .back-btn:hover {
+            background: #005f7f;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-hotel"></i> East Star Hotel - Admin Panel</h1>
+            <p>View and manage all bookings</p>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <i class="fas fa-calendar-check"></i>
+                <h3 id="totalBookings">0</h3>
+                <p>Total Bookings</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-money-bill-wave"></i>
+                <h3 id="totalRevenue">0</h3>
+                <p>Total Revenue (ETB)</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-bed"></i>
+                <h3 id="totalNights">0</h3>
+                <p>Total Nights Booked</p>
+            </div>
+        </div>
+
+        <div class="bookings-section">
+            <div class="section-header">
+                <h2><i class="fas fa-list"></i> All Bookings</h2>
+                <button class="refresh-btn" onclick="loadBookings()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+
+            <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search by name, email, or booking ID...">
+
+            <div id="bookingsContainer">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i>
+                    <p>Loading bookings...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="back-btn" onclick="window.location.href='XRAY.HTML'" title="Back to Main Site">
+        <i class="fas fa-home"></i>
+    </button>
+
+    <script>
+        let allBookings = [];
+
+        // Load bookings from backend
+        async function loadBookings() {
+            const container = document.getElementById('bookingsContainer');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin" style="font-size: 40px;"></i><p>Loading bookings...</p></div>';
+
+            try {
+                const response = await fetch('http://localhost:3001/api/bookings');
+                allBookings = await response.json();
+
+                if (allBookings.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-bookings">
+                            <i class="fas fa-inbox"></i>
+                            <h3>No bookings yet</h3>
+                            <p>When customers make bookings, they will appear here.</p>
+                        </div>
+                    `;
+                } else {
+                    displayBookings(allBookings);
+                    updateStats(allBookings);
+                }
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                container.innerHTML = `
+                    <div class="no-bookings">
+                        <i class="fas fa-exclamation-triangle" style="color: #dc3545;"></i>
+                        <h3>Could not load bookings</h3>
+                        <p>Make sure the backend server is running on port 3001</p>
+                        <button class="refresh-btn" onclick="loadBookings()">Try Again</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Display bookings in table
+        function displayBookings(bookings) {
+            const container = document.getElementById('bookingsContainer');
+            
+            const table = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Customer Name</th>
+                            <th>Email</th>
+                            <th>Room Type</th>
+                            <th>Check-In</th>
+                            <th>Check-Out</th>
+                            <th>Guests</th>
+                            <th>Total (ETB)</th>
+                            <th>Status</th>
+                            <th>Receipt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${bookings.map(booking => `
+                            <tr>
+                                <td><strong>#${booking.id}</strong></td>
+                                <td>${booking.name}</td>
+                                <td>${booking.email}</td>
+                                <td><strong>${booking.roomType}</strong></td>
+                                <td>${booking.checkIn}</td>
+                                <td>${booking.checkOut}</td>
+                                <td>${booking.adults} + ${booking.children}</td>
+                                <td><strong>${booking.totalPrice}</strong></td>
+                                <td><span class="status-badge status-confirmed">${booking.status}</span></td>
+                                <td>
+                                    <button class="download-btn" onclick="downloadReceipt(${booking.id})">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            container.innerHTML = table;
+        }
+
+        // Update statistics
+        function updateStats(bookings) {
+            const total = bookings.length;
+            const revenue = bookings.reduce((sum, b) => sum + b.totalPrice, 0);
+            const nights = bookings.reduce((sum, b) => sum + b.numberOfNights, 0);
+
+            document.getElementById('totalBookings').textContent = total;
+            document.getElementById('totalRevenue').textContent = revenue.toLocaleString();
+            document.getElementById('totalNights').textContent = nights;
+        }
+
+        // Download receipt
+        function downloadReceipt(bookingId) {
+            window.open(`http://localhost:3001/receipts/receipt_${bookingId}.pdf`, '_blank');
+        }
+
+        // Search functionality
+        document.getElementById('searchBox').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = allBookings.filter(booking => 
+                booking.name.toLowerCase().includes(searchTerm) ||
+                booking.email.toLowerCase().includes(searchTerm) ||
+                booking.id.toString().includes(searchTerm)
+            );
+            displayBookings(filtered);
+        });
+
+        // Load bookings on page load
+        loadBookings();
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+{
+  "bookings": [
+    {
+      "id": 1768118266605,
+      "name": "Abel Atkelet",
+      "email": "YourEmail@gmail.com",
+      "checkIn": "2026-01-12",
+      "checkOut": "2026-01-15",
+      "adults": "1 Adults",
+      "children": "1 Child",
+      "roomType": "VIP",
+      "pricePerNight": 5000,
+      "numberOfNights": 3,
+      "totalPrice": 15000,
+      "bookingDate": "2026-01-11T07:57:46.605Z",
+      "status": "Confirmed"
+    },
+    {
+      "id": 1768118330394,
+      "name": "blen Atkelet",
+      "email": "abela@gmail.com",
+      "checkIn": "2026-01-12",
+      "checkOut": "2026-01-17",
+      "adults": "1 Adults",
+      "children": "1 Child",
+      "roomType": "VIP",
+      "pricePerNight": 5000,
+      "numberOfNights": 5,
+      "totalPrice": 25000,
+      "bookingDate": "2026-01-11T07:58:50.394Z",
+      "status": "Confirmed"
+    }
+  ],
+  "info": {
+    "hotelName": "East Star Hotel",
+    "location": "Dire Dawa, Ethiopia",
+    "phone": "+251 911 22 33 44",
+    "email": "info@eaststarhotel.com"
+  },
+  "roomPrices": {
+    "VIP": 5000,
+    "Standard": 2500,
+    "Deluxe": 3500
+  }
+}

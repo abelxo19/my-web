@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Backend Connection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #007B9E;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .test-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .test-item h3 {
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .status {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .status.pending {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .status.success {
+            background: #28a745;
+            color: white;
+        }
+
+        .status.error {
+            background: #dc3545;
+            color: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #007B9E;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #005f7f;
+            transform: translateY(-2px);
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #007B9E;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .info-box h4 {
+            color: #007B9E;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #333;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🧪 Backend Connection Test</h1>
+
+        <div class="test-item">
+            <h3>Server (Port 3001)</h3>
+            <span class="status pending" id="server-status">Testing...</span>
+        </div>
+
+        <div class="test-item">
+            <h3>JSON Server (Port 3000)</h3>
+            <span class="status pending" id="json-status">Testing...</span>
+        </div>
+
+        <div class="test-item">
+            <h3>Database Connection</h3>
+            <span class="status pending" id="db-status">Testing...</span>
+        </div>
+
+        <button onclick="runTests()">🔄 Test Again</button>
+
+        <div class="info-box" id="instructions">
+            <h4>⚡ Quick Instructions:</h4>
+            <p>Before testing, make sure you have:</p>
+            <ol style="margin-left: 20px; margin-top: 10px;">
+                <li>Installed dependencies: <code>npm install</code></li>
+                <li>Started the backend server in one terminal</li>
+                <li>Started JSON Server in another terminal</li>
+            </ol>
+
+            <div class="code" style="margin-top: 15px;">
+                # Terminal 1<br>
+                npm start<br><br>
+                # Terminal 2 (new tab/window)<br>
+                npm run json-server
+            </div>
+        </div>
+
+        <div class="info-box" id="result-box" style="display: none; background: #d4edda; border-left-color: #28a745;">
+            <h4>✅ All Tests Passed!</h4>
+            <p>Your backend is working correctly. You can now:</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li><a href="XRAY.HTML" style="color: #007B9E;">Open the Hotel Website</a></li>
+                <li><a href="admin.html" style="color: #007B9E;">View Admin Dashboard</a></li>
+            </ul>
+        </div>
+
+        <div class="info-box" id="error-box" style="display: none; background: #f8d7da; border-left-color: #dc3545;">
+            <h4>❌ Connection Failed</h4>
+            <p id="error-message">Please check the instructions above and try again.</p>
+        </div>
+    </div>
+
+    <script>
+        async function runTests() {
+            // Reset statuses
+            document.getElementById('server-status').className = 'status pending';
+            document.getElementById('server-status').textContent = 'Testing...';
+            document.getElementById('json-status').className = 'status pending';
+            document.getElementById('json-status').textContent = 'Testing...';
+            document.getElementById('db-status').className = 'status pending';
+            document.getElementById('db-status').textContent = 'Testing...';
+
+            document.getElementById('result-box').style.display = 'none';
+            document.getElementById('error-box').style.display = 'none';
+
+            let allPassed = true;
+            let errors = [];
+
+            // Test 1: Custom Server (Port 3001)
+            try {
+                const response = await fetch('http://localhost:3001/api/bookings');
+                if (response.ok) {
+                    document.getElementById('server-status').className = 'status success';
+                    document.getElementById('server-status').textContent = '✅ Connected';
+                } else {
+                    throw new Error('Server responded with error');
+                }
+            } catch (error) {
+                document.getElementById('server-status').className = 'status error';
+                document.getElementById('server-status').textContent = '❌ Failed';
+                allPassed = false;
+                errors.push('Server on port 3001 is not running. Run: npm start');
+            }
+
+            // Test 2: JSON Server (Port 3000)
+            try {
+                const response = await fetch('http://localhost:3000/bookings');
+                if (response.ok) {
+                    document.getElementById('json-status').className = 'status success';
+                    document.getElementById('json-status').textContent = '✅ Connected';
+                } else {
+                    throw new Error('JSON Server responded with error');
+                }
+            } catch (error) {
+                document.getElementById('json-status').className = 'status error';
+                document.getElementById('json-status').textContent = '❌ Failed';
+                allPassed = false;
+                errors.push('JSON Server on port 3000 is not running. Run: npm run json-server');
+            }
+
+            // Test 3: Database
+            try {
+                const response = await fetch('http://localhost:3000/info');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.hotelName === 'East Star Hotel') {
+                        document.getElementById('db-status').className = 'status success';
+                        document.getElementById('db-status').textContent = '✅ Connected';
+                    } else {
+                        throw new Error('Database data mismatch');
+                    }
+                } else {
+                    throw new Error('Database connection failed');
+                }
+            } catch (error) {
+                document.getElementById('db-status').className = 'status error';
+                document.getElementById('db-status').textContent = '❌ Failed';
+                allPassed = false;
+                errors.push('Database (db.json) is not accessible');
+            }
+
+            // Show results
+            if (allPassed) {
+                document.getElementById('result-box').style.display = 'block';
+            } else {
+                document.getElementById('error-box').style.display = 'block';
+                document.getElementById('error-message').innerHTML =
+                    errors.map(err => `• ${err}`).join('<br>');
+            }
+        }
+
+        // Run tests on page load
+        window.addEventListener('load', () => {
+            setTimeout(runTests, 500);
+        });
+    </script>
+</body>
+
+</html>
